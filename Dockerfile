@@ -11,7 +11,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y git libgomp1 wget unzip && \
+    apt-get install -y git libgomp1 wget unzip pkg-config build-essential \
+    libavdevice-dev libavfilter-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev && \
     apt-get clean
 
 # Install latest adb
