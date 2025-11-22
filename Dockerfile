@@ -24,7 +24,8 @@ RUN wget https://dl.google.com/android/repository/platform-tools-latest-linux.zi
 WORKDIR /app
 
 RUN git clone -b dev $ALAS_URL /app/AzurLaneAutoScript && \
-    cp /app/AzurLaneAutoScript/deploy/docker/requirements.txt /tmp/requirements.txt
+    cp /app/AzurLaneAutoScript/deploy/docker/requirements.txt /tmp/requirements.txt && \
+    sed -i 's/av==10\\.0\\.0/av==9.2.0/' /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 RUN cd /app/AzurLaneAutoScript/config/ && \
