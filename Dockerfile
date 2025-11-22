@@ -1,7 +1,7 @@
 FROM python:3.7-slim-bullseye
 
 ENV TZ=Asia/Shanghai
-ENV ALAS_URL=https://github.com/W1NDes/M-AzurLaneAutoScript
+ENV ALAS_URL=https://github.com/Fearless743/M-AzurLaneAutoScript
 ENV FIX_MXNET=0
 EXPOSE 22267
 
