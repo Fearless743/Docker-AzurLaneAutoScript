@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 
 ENV TZ=Asia/Shanghai
-ENV ALAS_URL=https://github.com/LmeSzinc/AzurLaneAutoScript
+ENV ALAS_URL=https://github.com/W1NDes/M-AzurLaneAutoScript
 ENV FIX_MXNET=0
 EXPOSE 22267
 
@@ -22,7 +22,7 @@ RUN wget https://dl.google.com/android/repository/platform-tools-latest-linux.zi
 
 WORKDIR /app
 
-RUN git clone $ALAS_URL /app/AzurLaneAutoScript && \
+RUN git clone -b dev $ALAS_URL /app/AzurLaneAutoScript && \
     cp /app/AzurLaneAutoScript/deploy/docker/requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
