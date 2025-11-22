@@ -2,11 +2,6 @@ name: Push Docker
 
 on:
   workflow_dispatch:
-    inputs:
-      publish_tag:
-        description: "Publish Tag"
-        required: false
-        default: "latest"
 
 permissions:
   contents: read
@@ -27,6 +22,11 @@ jobs:
           IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/azurlaneautoscript
           echo "IMAGE_NAME=${IMAGE_NAME,,}" >> $GITHUB_ENV
 
+      - name: Prepare backup tag
+        run: |
+          BACKUP_TAG="$(date -u +%Y%m%d%H%M%S)-${GITHUB_SHA::7}"
+          echo "BACKUP_TAG=${BACKUP_TAG,,}" >> $GITHUB_ENV
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -34,9 +34,22 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Archive previous latest (if present)
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          BACKUP_TAG: ${{ env.BACKUP_TAG }}
+        run: |
+          if docker pull "${IMAGE_NAME}:latest"; then
+            docker tag "${IMAGE_NAME}:latest" "${IMAGE_NAME}:${BACKUP_TAG}"
+            docker push "${IMAGE_NAME}:${BACKUP_TAG}"
+          else
+            echo "No existing latest image found; skipping archive."
+          fi
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ github.event.inputs.publish_tag }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
